@@ -71,15 +71,19 @@ const CalcualtorContainer = styled(Flex)`
   background-color: grey;
   border: none;
   box-shadow: 1px 1px 10px 1px grey;
+  @media (max-width: 768px) {
+    height: 100vh;
+    width: 100vw;
+  }
 `
 const ButtonRow = styled(Flex)`
   border-top: none;
-  height: 16%;
+  flex: 2;
   width: 100%;
   text-align: center;
 `
 const Input = styled.input`
-  height: 25%;
+  flex: 3;
   border-left: 1px solid black;
   background-color: black;
   border: 0px;
@@ -89,7 +93,10 @@ const Input = styled.input`
   font-size: 80px;
   font-weight: 100;
   color: white;
-  padding: 10px;
+  padding: 3%;
+  @media (max-width: 768px) {
+    width: 94%;
+  }
 `
 
 const Button = styled.button`
