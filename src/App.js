@@ -202,7 +202,7 @@ const Input = styled.input`
 `
 
 const Button = styled.button`
-  width: 25%;
+  flex: 1;
   height: 100%;
   padding: 0px;
   border: 0px;
@@ -225,7 +225,7 @@ const Button = styled.button`
   `}
 `
 const ZeroButton = styled(Button)`
-  width: 50.5%;
+  flex: 1.6;
   text-align: left;
   padding-left: 32px;
 `
