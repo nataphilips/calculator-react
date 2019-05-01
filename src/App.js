@@ -6,12 +6,13 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.initialState = {
       input: 0,
       aState: "0",
       bState: "",
       operator: "",
     }
+    this.state = this.initialState;
   }
 
   addDigit(x) {
@@ -20,14 +21,19 @@ class App extends Component {
       this.setState({ input: 0 });
       this.setState({ aState: "0" });
     } else {
-        if (a == "0" && x == ".") {
+      if (a === "0" && x == ".") {
+        a = a.concat(x);
+      }
+      else if (x == ".") {
+        if (a.indexOf(".") === -1) {
           a = a.concat(x.toString(10));
         }
-        else if (a == "0") {
-          a = x.toString(10);
-        } else {
-          a = a.concat(x.toString(10));
-        }
+      }
+      else if (a == "0") {
+        a = x.toString(10);
+      } else {
+        a = a.concat(x.toString(10));
+      }
       this.setState({ input: a });
       this.setState({ aState: a });
     }
@@ -104,10 +110,7 @@ class App extends Component {
   }
 
    reset() {
-   this.setState({ aState: "" });
-   this.setState({ bState: "" });
-   this.setState({ input: 0});
-   this.setState({ operator: "" });
+     this.setState({ ...this.initialState });
    }
 
   render() {
