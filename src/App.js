@@ -8,8 +8,107 @@ class App extends Component {
 
     this.state = {
       input: 0,
+      aState: "0",
+      bState: "",
+      operator: "",
     }
   }
+
+  addDigit(x) {
+    let a = this.state.aState;
+    if (x == 0 && this.state.input == 0) {
+      this.setState({ input: 0 });
+      this.setState({ aState: "0" });
+    } else {
+        if (a == "0" && x == ".") {
+          a = a.concat(x.toString(10));
+        }
+        else if (a == "0") {
+          a = x.toString(10);
+        } else {
+          a = a.concat(x.toString(10));
+        }
+      this.setState({ input: a });
+      this.setState({ aState: a });
+    }
+  }
+
+  operation(x) {
+    var operator = x;
+    this.setState({ operator });
+
+    let a = this.state.aState;
+    let b = this.state.bState;
+
+    if (a && b) {
+      const result = this.calculation(a, b, operator);
+      this.setState({ bState: result.toString(10) });
+      this.setState({ input: result });
+      this.setState({ aState: "" });
+    } else {
+      this.setState({ bState: a.toString(10) });
+      this.setState({ aState: "" });
+    }
+  }
+
+  calculation(a, b, operator) {
+    operator = this.state.operator;
+    a = Number(a);
+    b = Number(b);
+    let result = 0;
+    if(operator === "+") {
+      result = a + b;
+    }
+    else if(operator === "-") {
+      result = b - a;
+    }
+    else if(operator === "/") {
+      if (b == 0) {
+        result = 0;
+      }
+      else if (a == 0) {
+        result = "&infin;";
+      } else {
+        result = b / a;
+      }
+    }
+    else {
+      result = a * b;
+    }
+    return result;
+  }
+
+  equals() {
+    var toPrint = this.calculation(this.state.aState, this.state.bState, this.state.operator);
+    this.setState({ aState: toPrint.toString(10) });
+    this.setState({ input: toPrint });
+    this.setState({ bState: "" });
+  }
+
+  plusMinus() {
+    var displayed = this.state.aState;
+    if (displayed[0] == "-") {
+      displayed = displayed.substring(1);
+    } else {
+      displayed = "-" + displayed;
+    }
+    this.setState({ input: displayed });
+    this.setState({ aState: displayed });
+  }
+
+  percent() {
+    var displayed = this.state.aState;
+    displayed = (Number(displayed) / 100).toString(10);
+    this.setState({ input: displayed });
+    this.setState({ aState: displayed });
+  }
+
+   reset() {
+   this.setState({ aState: "" });
+   this.setState({ bState: "" });
+   this.setState({ input: 0});
+   this.setState({ operator: "" });
+   }
 
   render() {
     return (
@@ -20,33 +119,33 @@ class App extends Component {
             value={this.state.input}>
           </Input>
           <ButtonRow>
-            <Button greyButton={true}>AC</Button>
-            <Button greyButton={true}>&plusmn;</Button>
-            <Button greyButton={true}>%</Button>
-            <Button orangeButton={true}>&divide;</Button>
+            <Button greyButton={true} onClick={() => this.reset()}>AC</Button>
+            <Button greyButton={true} onClick={() => this.plusMinus()}>&plusmn;</Button>
+            <Button greyButton={true} onClick={() => this.percent()}>%</Button>
+            <Button orangeButton={true} onClick={() => this.operation("/")}>&divide;</Button>
           </ButtonRow>
           <ButtonRow>
-            <Button>7</Button>
-            <Button>8</Button>
-            <Button>9</Button>
-            <Button orangeButton={true}>&times;</Button>
+            <Button onClick={() => this.addDigit(7)}>7</Button>
+            <Button onClick={() => this.addDigit(8)}>8</Button>
+            <Button onClick={() => this.addDigit(9)}>9</Button>
+            <Button orangeButton={true} onClick={() => this.operation("*")}>&times;</Button>
           </ButtonRow>
           <ButtonRow>
-            <Button>4</Button>
-            <Button>5</Button>
-            <Button>6</Button>
-            <Button orangeButton={true}>&minus;</Button>
+            <Button onClick={() => this.addDigit(4)}>4</Button>
+            <Button onClick={() => this.addDigit(5)}>5</Button>
+            <Button onClick={() => this.addDigit(6)}>6</Button>
+            <Button orangeButton={true} onClick={() => this.operation("-")}>&minus;</Button>
           </ButtonRow>
           <ButtonRow>
-            <Button>1</Button>
-            <Button>2</Button>
-            <Button>3</Button>
-            <Button orangeButton={true}>+</Button>
+            <Button onClick={() => this.addDigit(1)}>1</Button>
+            <Button onClick={() => this.addDigit(2)}>2</Button>
+            <Button onClick={() => this.addDigit(3)}>3</Button>
+            <Button orangeButton={true} onClick={() => this.operation("+")}>+</Button>
           </ButtonRow>
           <ButtonRow>
-            <ZeroButton>0</ZeroButton>
-            <Button>	&#1628;</Button>
-            <Button orangeButton={true}>=</Button>
+            <ZeroButton onClick={() => this.addDigit(0)}>0</ZeroButton>
+            <Button onClick={() => this.addDigit('.')}>	&#1628;</Button>
+            <Button orangeButton={true} onClick={() => this.equals()}>=</Button>
             </ButtonRow>
         </CalcualtorContainer>
       </AppBody>
