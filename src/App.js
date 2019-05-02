@@ -12,35 +12,55 @@ class App extends Component {
       bState: "0",
       operator: "",
       newCalculation: false,
+      digitsAmount: 0,
+      fontSize: 90,
+      fontWidth: 49,
     }
     this.state = this.initialState;
   }
 
   addDigit(x) {
     let a = this.state.aState;
+    let digits = this.state.digitsAmount;
     if (x == 0 && this.state.input == 0) {
       this.setState({ input: 0 });
       this.setState({ aState: "0" });
+      this.setState({ digitsAmount: 0 });
     } else {
       if (a === "0" && x == ".") {
         a = a.concat(x);
+        digits = digits + 2;
       }
       else if (x == ".") {
         if (a.indexOf(".") === -1) {
           a = a.concat(x.toString(10));
+          digits = digits + 1;
         }
       }
       else if (this.state.newCalculation === true) {
         a = x.toString(10);
         this.setState({ newCalculation: false });
+        digits = 1;
       }
       else if (a == "0") {
         a = x.toString(10);
+        digits = 1;
       } else {
         a = a.concat(x.toString(10));
+        digits = digits + 1;
       }
       this.setState({ input: a });
       this.setState({ aState: a });
+      this.setState({ digitsAmount: digits });
+    }
+
+    if (digits > 6) {
+      let width = this.state.fontWidth;
+      let newWidth = 300 / digits;
+      let ratio = newWidth / width;
+      let size = this.state.fontSize * ratio;
+      this.setState({ fontSize: size });
+      this.setState({ fontWidth: newWidth});
     }
   }
 
@@ -51,7 +71,7 @@ class App extends Component {
     let a = this.state.aState;
     let b = this.state.bState;
 
-    if (a && b) {
+    if (a !=="0"  && b !=="0") {
       const result = this.calculation(a, b, operator);
       this.setState({ bState: result.toString(10) });
       this.setState({ input: result });
@@ -98,14 +118,18 @@ class App extends Component {
   }
 
   plusMinus() {
+    let digits = this.state.digitsAmount;
     var displayed = this.state.aState;
     if (displayed[0] == "-") {
       displayed = displayed.substring(1);
+      digits = digits - 1;
     } else {
       displayed = "-" + displayed;
+      digits = digits + 1;
     }
     this.setState({ input: displayed });
     this.setState({ aState: displayed });
+    this.setState({ digitsAmount: digits });
   }
 
   percent() {
@@ -125,7 +149,8 @@ class App extends Component {
         <CalcualtorContainer>
           <Input
             type="text"
-            value={this.state.input}>
+            value={this.state.input}
+            font={this.state.fontSize}>
           </Input>
           <ButtonRow>
             <Button greyButton={true} onClick={() => this.reset()}>AC</Button>
@@ -198,7 +223,7 @@ const Input = styled.input`
   width: 300px;
   font-family: 'Roboto', sans-serif;
   text-align: right;
-  font-size: 80px;
+  font-size: ${props => props.font}px;
   font-weight: 100;
   color: white;
   padding: 3%;
