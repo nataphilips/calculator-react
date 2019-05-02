@@ -254,6 +254,9 @@ const Button = styled.button`
   ${props => props.greyButton && `
     background-color: #C4C3CC;
   `}
+  &:active {
+    background-color: #b0aeba;
+  }
 `
 const ZeroButton = styled(Button)`
   flex: 1.6;
