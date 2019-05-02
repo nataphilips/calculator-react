@@ -9,8 +9,9 @@ class App extends Component {
     this.initialState = {
       input: 0,
       aState: "0",
-      bState: "",
+      bState: "0",
       operator: "",
+      newCalculation: false,
     }
     this.state = this.initialState;
   }
@@ -28,6 +29,10 @@ class App extends Component {
         if (a.indexOf(".") === -1) {
           a = a.concat(x.toString(10));
         }
+      }
+      else if (this.state.newCalculation === true) {
+        a = x.toString(10);
+        this.setState({ newCalculation: false });
       }
       else if (a == "0") {
         a = x.toString(10);
@@ -50,10 +55,10 @@ class App extends Component {
       const result = this.calculation(a, b, operator);
       this.setState({ bState: result.toString(10) });
       this.setState({ input: result });
-      this.setState({ aState: "" });
+      this.setState({ aState: "0" });
     } else {
       this.setState({ bState: a.toString(10) });
-      this.setState({ aState: "" });
+      this.setState({ aState: "0" });
     }
   }
 
@@ -89,6 +94,7 @@ class App extends Component {
     this.setState({ aState: toPrint.toString(10) });
     this.setState({ input: toPrint });
     this.setState({ bState: "" });
+    this.setState({ newCalculation: true });
   }
 
   plusMinus() {
