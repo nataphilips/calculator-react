@@ -98,7 +98,7 @@ class App extends Component {
         result = 0;
       }
       else if (a == 0) {
-        result = "&infin;";
+        result = 0;
       } else {
         result = b / a;
       }
