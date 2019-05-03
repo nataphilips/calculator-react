@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import styled from 'styled-components';
 
 class App extends Component {
@@ -123,7 +122,9 @@ class App extends Component {
     if (displayed[0] == "-") {
       displayed = displayed.substring(1);
       digits = digits - 1;
-    } else {
+    } else if (displayed[0] == "0" && displayed.indexOf(".") === -1) {
+      return displayed;
+    }  else {
       displayed = "-" + displayed;
       digits = digits + 1;
     }
