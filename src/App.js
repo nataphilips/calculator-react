@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import Button from './Button'
 
 class App extends Component {
   constructor(props) {
@@ -11,55 +12,29 @@ class App extends Component {
       bState: "0",
       operator: "",
       newCalculation: false,
-      digitsAmount: 0,
-      fontSize: 90,
-      fontWidth: 49,
     }
     this.state = this.initialState;
   }
 
   addDigit(x) {
     let a = this.state.aState;
-    let digits = this.state.digitsAmount;
     if (x == 0 && this.state.input == 0) {
-      this.setState({ input: 0 });
-      this.setState({ aState: "0" });
-      this.setState({ digitsAmount: 0 });
+      a = "0";
     } else {
-      if (a === "0" && x == ".") {
-        a = a.concat(x);
-        digits = digits + 2;
-      }
-      else if (x == ".") {
-        if (a.indexOf(".") === -1) {
+        if (a === "0" && x == ".") {
+          a = a.concat(x);
+        } else if (x == "." && a.indexOf(".") === -1) {
+          a = a.concat(x);
+        } else if (this.state.newCalculation === true) {
+          a = x.toString(10);
+          this.setState({ newCalculation: false });
+        } else if (a == "0") {
+          a = x.toString(10);
+        } else {
           a = a.concat(x.toString(10));
-          digits = digits + 1;
         }
-      }
-      else if (this.state.newCalculation === true) {
-        a = x.toString(10);
-        this.setState({ newCalculation: false });
-        digits = 1;
-      }
-      else if (a == "0") {
-        a = x.toString(10);
-        digits = 1;
-      } else {
-        a = a.concat(x.toString(10));
-        digits = digits + 1;
-      }
       this.setState({ input: a });
       this.setState({ aState: a });
-      this.setState({ digitsAmount: digits });
-    }
-
-    if (digits > 6) {
-      let width = this.state.fontWidth;
-      let newWidth = 300 / digits;
-      let ratio = newWidth / width;
-      let size = this.state.fontSize * ratio;
-      this.setState({ fontSize: size });
-      this.setState({ fontWidth: newWidth});
     }
   }
 
@@ -76,7 +51,7 @@ class App extends Component {
       this.setState({ input: result });
       this.setState({ aState: "0" });
     } else {
-      this.setState({ bState: a.toString(10) });
+      this.setState({ bState: a });
       this.setState({ aState: "0" });
     }
   }
@@ -92,17 +67,12 @@ class App extends Component {
     else if(operator === "-") {
       result = b - a;
     }
-    else if(operator === "/") {
-      if (b == 0) {
-        result = 0;
-      }
-      else if (a == 0) {
-        result = 0;
-      } else {
-        result = b / a;
-      }
+    else if(operator === "/" && (b === 0 || a === 0)) {
+      result = 0;
     }
-    else {
+    else if (operator === "/") {
+      result = b / a;
+    } else {
       result = a * b;
     }
     return result;
@@ -112,7 +82,7 @@ class App extends Component {
     var toPrint = this.calculation(this.state.aState, this.state.bState, this.state.operator);
     this.setState({ aState: toPrint.toString(10) });
     this.setState({ input: toPrint });
-    this.setState({ bState: "" });
+    this.setState({ bState: "0" });
     this.setState({ newCalculation: true });
   }
 
@@ -130,7 +100,6 @@ class App extends Component {
     }
     this.setState({ input: displayed });
     this.setState({ aState: displayed });
-    this.setState({ digitsAmount: digits });
   }
 
   percent() {
@@ -144,14 +113,30 @@ class App extends Component {
      this.setState({ ...this.initialState });
    }
 
+   input() {
+     return this.state.input;
+   }
+
+   inputSize() {
+     let digits = this.state.input.toString(10).length;
+     let size = 90;
+     if (digits > 6) {
+       let width = 49;
+       let newWidth = 300 / digits;
+       let ratio = newWidth / width;
+       size = 90 * ratio;
+     }
+    return size;
+   }
+
   render() {
     return (
       <AppBody>
         <CalcualtorContainer>
           <Input
             type="text"
-            value={this.state.input}
-            font={this.state.fontSize}>
+            value={this.input()}
+            font={this.inputSize()}>
           </Input>
           <ButtonRow>
             <Button greyButton={true} onClick={() => this.reset()}>AC</Button>
@@ -178,7 +163,7 @@ class App extends Component {
             <Button orangeButton={true} onClick={() => this.operation("+")}>+</Button>
           </ButtonRow>
           <ButtonRow>
-            <ZeroButton onClick={() => this.addDigit(0)}>0</ZeroButton>
+            <Button onClick={() => this.addDigit(0)} zeroButton={true}>0</Button>
             <Button onClick={() => this.addDigit('.')}>	&#1628;</Button>
             <Button orangeButton={true} onClick={() => this.equals()}>=</Button>
             </ButtonRow>
@@ -218,7 +203,6 @@ const ButtonRow = styled(Flex)`
 `
 const Input = styled.input`
   flex: 3;
-  border-left: 1px solid black;
   background-color: black;
   border: 0px;
   width: 300px;
@@ -231,38 +215,6 @@ const Input = styled.input`
   @media (max-width: 768px) {
     width: 94%;
   }
-`
-
-const Button = styled.button`
-  flex: 1;
-  height: 100%;
-  padding: 0px;
-  border: 0px;
-  border-top: 0.3px solid black;
-  border-right: 0.3px solid black;
-  background-color: #E0E0E7;
-  outline: none;
-  cursor: pointer;
-  font-family: 'Roboto', sans-serif;
-  font-size: 28px;
-  font-weight: 100;
-  ${props => props.orangeButton && `
-    background-color: #FA9318;
-    color: white;
-    border-right: none;
-    font-size: 40px;
-  `}
-  ${props => props.greyButton && `
-    background-color: #C4C3CC;
-  `}
-  &:active {
-    background-color: #b0aeba;
-  }
-`
-const ZeroButton = styled(Button)`
-  flex: 1.6;
-  text-align: left;
-  padding-left: 32px;
 `
 
 export default App;
