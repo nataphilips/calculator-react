@@ -1,7 +1,7 @@
 ## `what is it`
 
-My attempts to make a MAC calculator.
-
+My attempts to make a Mac-style calculator.
+[Live demo](https://calcualtor-react.herokuapp.com/) 
 
 ### `code to show`
 
@@ -11,5 +11,3 @@ My attempts to make a MAC calculator.
 * Flexbox
 
 ![CalculatorScreenshot](https://i.ibb.co/g60kPbY/Calculator.png)
-
-[Link to the App](https://calcualtor-react.herokuapp.com/) 
