@@ -27,7 +27,6 @@ class App extends Component {
           a = a.concat(x);
         } else if (this.state.newCalculation === true) {
           a = x.toString(10);
-          this.setState({ newCalculation: false });
         } else if (a == "0") {
           a = x.toString(10);
         } else {
@@ -35,6 +34,7 @@ class App extends Component {
         }
       this.setState({ input: a });
       this.setState({ aState: a });
+      this.setState({ newCalculation: false });
     }
   }
 
